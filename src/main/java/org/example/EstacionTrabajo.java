@@ -5,19 +5,19 @@ import java.util.Queue;
 import java.util.concurrent.ExecutorService;
 
 public class EstacionTrabajo implements Runnable {
-private String nombre;
-private String componente;
-private Buffer buffer;
-private Tablero tablero;
-private ExecutorService executor;
+    private String nombre;
+    private String componente;
+    private Buffer buffer;
+    private Tablero tablero;
+    private ExecutorService executor;
 
-public EstacionTrabajo(String nombre, String componente, Buffer buffer, Tablero tablero, ExecutorService executor) {
+    public EstacionTrabajo(String nombre, String componente, Buffer buffer, Tablero tablero, ExecutorService executor) {
         this.nombre = nombre;
         this.componente = componente;
         this.buffer = buffer;
         this.tablero = tablero;
         this.executor = executor;
-        }
+    }
 
 
     @Override

@@ -2,34 +2,45 @@ package org.example;
 
 import java.awt.*;
 import javax.swing.JPanel;
-
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Random;
 
 public class Tablero extends JPanel {
     private final int tableroWidth = 800;
     private final int tableroHeight = 400;
     private int bolaSize = 20;
-    private int[] acumulacion; // Acumulación de bolas por posición en el eje X
+    private Queue<Integer> bolasEnAire;
+    private Random random = new Random();
 
     public Tablero() {
-        acumulacion = new int[tableroWidth];
+        bolasEnAire = new LinkedList<>();
     }
 
     public void lanzarBola() {
-        int x = (int) (Math.random() * (tableroWidth - bolaSize));
-        synchronized (acumulacion) {
-            acumulacion[x]++;
+        int x = obtenerPosicionConDistribucionNormal();
+        synchronized (bolasEnAire) {
+            if (x >= 0 && x < tableroWidth) {
+                bolasEnAire.offer(x);
+            }
         }
         repaint();
     }
 
+    private int obtenerPosicionConDistribucionNormal() {
+        double media = tableroWidth / 2.0;
+        double desviacionEstandar = tableroWidth / 6.0;
+        double u = random.nextGaussian(); // Genera un valor aleatorio con distribución normal (campana de Gauss)
+        int x = (int) (media + u * desviacionEstandar);
+        return x;
+    }
+
     private void moverBolas() {
-        synchronized (acumulacion) {
-            for (int i = tableroWidth - 1; i >= 0; i--) {
-                if (acumulacion[i] > 0) {
-                    acumulacion[i]--;
-                    if (i < tableroWidth - 1) {
-                        acumulacion[i + 1]++;
-                    }
+        synchronized (bolasEnAire) {
+            for (int i = 0; i < bolasEnAire.size(); i++) {
+                int x = bolasEnAire.poll();
+                if (x < tableroWidth - 1) {
+                    bolasEnAire.offer(x + 1);
                 }
             }
         }
@@ -41,12 +52,11 @@ public class Tablero extends JPanel {
         super.paintComponent(g);
         g.setColor(Color.BLUE);
 
-        for (int x = 0; x < tableroWidth; x++) {
-            int y;
-            synchronized (acumulacion) {
-                y = tableroHeight - acumulacion[x] * bolaSize;
+        synchronized (bolasEnAire) {
+            for (int x : bolasEnAire) {
+                int y = tableroHeight - (bolasEnAire.size() * bolaSize);
+                g.fillOval(x, y, bolaSize, bolaSize);
             }
-            g.fillOval(x, y, bolaSize, bolaSize);
         }
         moverBolas();
     }
