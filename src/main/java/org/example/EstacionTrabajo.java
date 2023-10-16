@@ -1,7 +1,6 @@
 package org.example;
 
 
-import java.util.Queue;
 import java.util.concurrent.ExecutorService;
 
 public class EstacionTrabajo implements Runnable {

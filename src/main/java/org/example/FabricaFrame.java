@@ -2,8 +2,6 @@ package org.example;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
